@@ -38,7 +38,7 @@ import {
     redeemOnEth,
     getIsTransferCompletedEth,
 } from '@certusone/wormhole-sdk'
-import { getKeypair } from './utils'
+import { getKeypair, bs58ToBytes } from './utils'
 
 setDefaultWasm('node')
 
@@ -131,7 +131,7 @@ const transferToken = async () => {
     const signer = new ethers.Wallet(ETH_PRIVATE_KEY, provider)
     const targetAddress = await signer.getAddress()
     // create a keypair for Solana
-    const keypair = getKeypair('./sender.json')
+    const keypair = getKeypair('./sender2.json')
     const payerAddress = keypair.publicKey.toString()
     console.log(payerAddress)
     // find the associated token account
@@ -240,5 +240,5 @@ const transferToken = async () => {
 !(async () => {
     // await attestSolToEth()
     // await checkAttestToken()
-    // await transferToken()
+    await transferToken()
 })()
