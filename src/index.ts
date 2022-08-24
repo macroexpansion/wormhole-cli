@@ -1,12 +1,13 @@
 import { Command, Option } from 'commander'
 import { CHAIN, getEnumValues, CHAIN_ID } from './utils'
-import { transferSolanaToken, attestSolanaToken } from './solana'
+import { transferSolanaToken } from './solana'
+import { transferEvmToken } from './evm'
 
 const program = new Command()
 
 program.name('Wormhole CLI').description('CLI to Wormhole SDK').version('0.1.0')
 
-program
+/* program
     .command('attest')
     .description('attest token from source chain to destination chain')
     .argument('<token>', 'token address to transfer')
@@ -50,8 +51,6 @@ program
                 break
             case CHAIN.POLYGON:
                 break
-            case CHAIN.AVAX:
-                break
             default:
                 console.log(
                     `sorry, cli only supports these chain ${getEnumValues(
@@ -59,13 +58,12 @@ program
                     )}`
                 )
         }
-    })
+    }) */
 
 program
     .command('transfer')
     .description('transfer token from source chain to destination chain')
     .argument('<amount>', 'amount of token to transfer')
-    .argument('<token>', 'token address to transfer')
     .argument('<receiver>', 'receiver address')
     .requiredOption('--senderPK <string>', "sender source chain's private key")
     .requiredOption(
@@ -82,9 +80,15 @@ program
             getEnumValues(CHAIN)
         )
     )
-    .action(async (amount, token, receiver, options) => {
+    .option('--testnet', 'run on testnet')
+    .action(async (amount, receiver, options) => {
         if (!options.from || !options.to) {
             console.error('--from and --to are required')
+            process.exit(1)
+        }
+
+        if (options.to === 'solana') {
+            console.error('transfer to Solana currently not supported')
             process.exit(1)
         }
 
@@ -93,28 +97,53 @@ program
             process.exit(1)
         }
 
-        const { senderPK, payerPK, from, to } = options
+        const { senderPK, payerPK, from, to, testnet } = options
+        const network: string = testnet ? 'TESTNET' : 'MAINNET'
 
+        console.log(`transfer from ${from} to ${to}`)
         switch (from) {
             case CHAIN.SOLANA:
                 await transferSolanaToken(
                     amount,
-                    token,
                     receiver,
                     senderPK,
                     payerPK,
-                    to
+                    to,
+                    network
                 )
                 break
             case CHAIN.ETHEREUM:
-                console.log('eth')
+                await transferEvmToken(
+                    amount,
+                    receiver,
+                    senderPK,
+                    payerPK,
+                    from,
+                    to,
+                    network
+                )
                 break
             case CHAIN.BSC:
-                console.log('bsc')
+                await transferEvmToken(
+                    amount,
+                    receiver,
+                    senderPK,
+                    payerPK,
+                    from,
+                    to,
+                    network
+                )
                 break
             case CHAIN.POLYGON:
-                break
-            case CHAIN.AVAX:
+                await transferEvmToken(
+                    amount,
+                    receiver,
+                    senderPK,
+                    payerPK,
+                    from,
+                    to,
+                    network
+                )
                 break
             default:
                 console.log(

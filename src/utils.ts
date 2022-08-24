@@ -8,28 +8,54 @@ import {
     CHAIN_ID_BSC,
     CHAIN_ID_AVAX,
 } from '@certusone/wormhole-sdk'
+import { clusterApiUrl } from '@solana/web3.js'
+
+export const SOLANA_HOST = {
+    TESTNET: clusterApiUrl('devnet'),
+    MAINNET: clusterApiUrl('mainnet-beta'),
+}
+
+export const WORMHOLE_RPC_HOSTS = {
+    TESTNET: ['https://wormhole-v2-testnet-api.certus.one'],
+    MAINNET: [
+        'https://wormhole-v2-mainnet-api.certus.one',
+        'https://wormhole.inotel.ro',
+        'https://wormhole-v2-mainnet-api.mcf.rocks',
+        'https://wormhole-v2-mainnet-api.chainlayer.network',
+        'https://wormhole-v2-mainnet-api.staking.fund',
+        'https://wormhole-v2-mainnet.01node.com',
+    ],
+}
 
 export const CHAIN_ID = {
-    sol: CHAIN_ID_SOLANA,
-    eth: CHAIN_ID_ETH,
+    solana: CHAIN_ID_SOLANA,
+    ethereum: CHAIN_ID_ETH,
     bsc: CHAIN_ID_BSC,
     polygon: CHAIN_ID_POLYGON,
-    avax: CHAIN_ID_AVAX,
+    // avax: CHAIN_ID_AVAX,
 }
 
 export const EVM_NODE_URL = {
-    eth: CHAIN_ID_ETH,
-    bsc: 'https://data-seed-prebsc-1-s1.binance.org:8545',
-    polygon: 'https://rpc-mumbai.maticvigil.com/',
-    avax: CHAIN_ID_AVAX,
+    TESTNET: {
+        ethereum:
+            'https://goerli.infura.io/v3/ce3211bed477493b9ece37e3b031273e',
+        bsc: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+        polygon: 'https://rpc-mumbai.maticvigil.com/',
+    },
+    MAINNET: {
+        ethereum:
+            'https://mainnet.infura.io/v3/ce3211bed477493b9ece37e3b031273e',
+        bsc: 'https://bsc-dataseed.binance.org/',
+        polygon: 'https://rpc-mainnet.maticvigil.com',
+    },
 }
 
 export enum CHAIN {
-    SOLANA = 'sol',
-    ETHEREUM = 'eth',
+    SOLANA = 'solana',
+    ETHEREUM = 'ethereum',
     BSC = 'bsc',
     POLYGON = 'polygon',
-    AVAX = 'avax',
+    // AVAX = 'avax',
 }
 
 export function getEnumValues<T extends string | number>(e: any): Array<T> {
